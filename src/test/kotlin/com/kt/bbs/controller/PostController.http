@@ -1,0 +1,28 @@
+### create a new post
+POST /localhost:8080/posts
+Content-Type: application/json
+
+{
+    "title": "My first post",
+    "content": "This is my first post",
+    "createdBy": "me"
+}
+
+### update a post
+PUT /localhost:8080/posts/1
+Content-Type: application/json
+
+{
+    "title": "My first post",
+    "content": "This is my first post",
+    "updatedBy": "me"
+}
+
+### delete a post
+DELETE /localhost:8080/posts/1?createdBy=me
+
+### get post by id
+GET /localhost:8080/posts/1
+
+### get posts
+GET /localhost:8080/posts?page=0&size=10&title=title&createdBy=me
