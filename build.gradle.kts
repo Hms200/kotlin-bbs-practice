@@ -6,6 +6,8 @@ plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
+    id("org.jlleitschuh.gradle.ktlint") version "11.4.0"
+    kotlin("kapt") version "1.9.20"
 }
 
 group = "com.kt"
@@ -20,13 +22,21 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("com.mysql:mysql-connector-j")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+
+    runtimeOnly("com.h2database:h2:2.1.214")
+    runtimeOnly("com.mysql:mysql-connector-j:8.0.32")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
+    testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
+    testImplementation("io.kotest:kotest-assertions-core:5.5.5")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
 }
 
 tasks.withType<KotlinCompile> {

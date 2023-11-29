@@ -9,5 +9,4 @@ class BbsApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }
