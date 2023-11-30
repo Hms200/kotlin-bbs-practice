@@ -1,11 +1,16 @@
 package com.kt.bbs.service
 
+import com.kt.bbs.controller.dto.PostDetailResponse
+import com.kt.bbs.controller.dto.PostSummaryResponse
 import com.kt.bbs.exception.PostCouldNotBeDeletedException
 import com.kt.bbs.exception.PostNotFoundException
 import com.kt.bbs.repository.PostRepository
 import com.kt.bbs.service.dto.PostCreateRequestDto
+import com.kt.bbs.service.dto.PostSearchRequestDto
 import com.kt.bbs.service.dto.PostUpdateRequestDto
 import com.kt.bbs.service.dto.toEntity
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,4 +43,29 @@ class PostService(
         return id
     }
 
+    fun getPost(id: Long): PostDetailResponse {
+        val post = postRepository.findByIdOrNull(id)
+            ?: throw PostNotFoundException()
+        return PostDetailResponse(
+            id = post.id,
+            title = post.title,
+            content = post.content,
+            createdBy = post.createdBy,
+            createdAt = post.createdAt.toString()
+        )
+    }
+
+    fun searchPosts(pageable: Pageable, request: PostSearchRequestDto): Page<PostSummaryResponse> {
+        return postRepository.findPageBy(
+            pageable = pageable,
+            postSearchRequestDto = request
+        ).map { post ->
+            PostSummaryResponse(
+                id = post.id,
+                title = post.title,
+                createdBy = post.createdBy,
+                createdAt = post.createdAt.toString()
+            )
+        }
+    }
 }

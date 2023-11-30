@@ -7,6 +7,7 @@ import com.kt.bbs.controller.dto.PostSummaryResponse
 import com.kt.bbs.controller.dto.PostUpdateRequest
 import com.kt.bbs.controller.dto.toDto
 import com.kt.bbs.service.PostService
+import com.kt.bbs.service.dto.toDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
 class PostController(
@@ -47,22 +47,17 @@ class PostController(
 
     @GetMapping("/posts/{id}")
     fun getPost(@PathVariable id: Long): PostDetailResponse {
-        return PostDetailResponse(
-            id = 1L,
-            title = "title",
-            content = "content",
-            createdBy = "createdBy",
-            createdAt = LocalDateTime.now().toString()
-        )
+        return postService.getPost(id)
     }
 
     @GetMapping("/posts")
     fun getPosts(
         pageable: Pageable,
         postSearchRequest: PostSearchRequest,
-    ): Page<PostSummaryResponse>? {
-        println("title: ${postSearchRequest.title}")
-        println("createdBy: ${postSearchRequest.createdBy}")
-        return null
+    ): Page<PostSummaryResponse> {
+        return postService.searchPosts(
+            pageable = if (!pageable.isPaged) Pageable.ofSize(10).withPage(0) else pageable,
+            request = postSearchRequest.toDto()
+        )
     }
 }
