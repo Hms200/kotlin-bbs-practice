@@ -1,5 +1,7 @@
 package com.kt.bbs.domain
 
+import com.kt.bbs.exception.PostCreatorMismatchException
+import com.kt.bbs.service.dto.PostUpdateRequestDto
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -20,4 +22,11 @@ class Post(
         protected set
     var content: String = content
         protected set
+
+    fun update(requestDto: PostUpdateRequestDto) {
+        if (this.createdBy != requestDto.updatedBy) throw PostCreatorMismatchException()
+        this.title = requestDto.title
+        this.content = requestDto.content
+        super.update(requestDto.updatedBy)
+    }
 }
