@@ -1,10 +1,8 @@
 package com.kt.bbs.controller.dto
 
-data class PostDetailResponse(
+data class CommentResponse(
     val id: Long,
-    val title: String,
     val content: String,
     val createdBy: String,
     val createdAt: String,
-    val comments: List<CommentResponse> = emptyList(),
 )

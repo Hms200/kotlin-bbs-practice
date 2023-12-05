@@ -9,5 +9,5 @@ data class PostSearchRequestDto(
 
 fun PostSearchRequest.toDto() = PostSearchRequestDto(
     title = title,
-    createdBy = createdBy,
+    createdBy = createdBy
 )

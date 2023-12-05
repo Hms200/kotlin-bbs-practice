@@ -22,7 +22,7 @@ Content-Type: application/json
 DELETE /localhost:8080/posts/1?createdBy=me
 
 ### get post by id
-GET /localhost:8080/posts/1
+GET /localhost:8080/posts/6
 
 ### get posts
 GET /localhost:8080/posts?page=0&size=10&title=title&createdBy=me
