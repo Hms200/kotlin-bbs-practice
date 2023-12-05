@@ -31,4 +31,5 @@ class CustomPostRepositoryImpl : CustomPostRepository, QuerydslRepositorySupport
 
         return PageImpl(result.results, pageable, result.total)
     }
+
 }

@@ -5,4 +5,5 @@ data class CommentResponse(
     val content: String,
     val createdBy: String,
     val createdAt: String,
+    val updatedAt: String,
 )

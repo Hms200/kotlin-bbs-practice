@@ -5,6 +5,7 @@ import com.kt.bbs.exception.PostCouldNotBeDeletedException
 import com.kt.bbs.exception.PostCreatorMismatchException
 import com.kt.bbs.exception.PostNotFoundException
 import com.kt.bbs.repository.PostRepository
+import com.kt.bbs.service.dto.CommentCreateRequestDto
 import com.kt.bbs.service.dto.PostCreateRequestDto
 import com.kt.bbs.service.dto.PostUpdateRequestDto
 import com.kt.bbs.service.dto.toDto
@@ -23,6 +24,7 @@ import java.time.LocalDateTime
 class PostServiceTest(
     private val postService: PostService,
     private val postRepository: PostRepository,
+    private val commentService: CommentService,
 ) : BehaviorSpec({
     given("게시글 생성") {
 
@@ -209,5 +211,34 @@ class PostServiceTest(
                 ) shouldBe true
             }
         }
+
+        When("댓글이 있는 경우") {
+            commentService.createComment(
+                CommentCreateRequestDto(
+                    postId = 1L,
+                    content = "댓글 내용",
+                    createdBy = "댓글 작성자",
+                )
+            )
+            commentService.createComment(
+                CommentCreateRequestDto(
+                    postId = 1L,
+                    content = "댓글 내용2",
+                    createdBy = "댓글 작성자2",
+                )
+            )
+
+            then("댓글 목록도 리턴") {
+                val result = postService.getPost(1L)
+
+                result.comments shouldNotBe null
+                result.comments.size shouldBe 2
+                result.comments[0].content shouldBe "댓글 내용2"
+                result.comments[1].content shouldBe "댓글 내용"
+                result.comments[0].createdBy shouldBe "댓글 작성자2"
+                result.comments[1].createdBy shouldBe "댓글 작성자"
+            }
+        }
+
     }
 })

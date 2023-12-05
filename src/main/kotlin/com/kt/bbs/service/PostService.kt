@@ -1,5 +1,6 @@
 package com.kt.bbs.service
 
+import com.kt.bbs.controller.dto.CommentResponse
 import com.kt.bbs.controller.dto.PostDetailResponse
 import com.kt.bbs.controller.dto.PostSummaryResponse
 import com.kt.bbs.exception.PostCouldNotBeDeletedException
@@ -46,12 +47,23 @@ class PostService(
     fun getPost(id: Long): PostDetailResponse {
         val post = postRepository.findByIdOrNull(id)
             ?: throw PostNotFoundException()
+
         return PostDetailResponse(
             id = post.id,
             title = post.title,
             content = post.content,
             createdBy = post.createdBy,
-            createdAt = post.createdAt.toString()
+            createdAt = post.createdAt.toString(),
+            comments = post.comments.map { comment ->
+                CommentResponse(
+                    id = comment.id,
+                    content = comment.content,
+                    createdBy = comment.createdBy,
+                    createdAt = comment.createdAt.toString(),
+                    updatedAt = comment.updatedAt.toString()
+                )
+            }
+                .sortedByDescending { it.createdAt }
         )
     }
 
