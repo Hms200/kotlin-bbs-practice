@@ -63,7 +63,8 @@ class PostService(
                     updatedAt = comment.updatedAt.toString()
                 )
             }
-                .sortedByDescending { it.createdAt }
+                .sortedByDescending { it.createdAt },
+            tags = post.tags.map { it.name }
         )
     }
 
@@ -76,7 +77,8 @@ class PostService(
                 id = post.id,
                 title = post.title,
                 createdBy = post.createdBy,
-                createdAt = post.createdAt.toString()
+                createdAt = post.createdAt.toString(),
+                tag = post.tags.firstOrNull()?.name
             )
         }
     }

@@ -12,20 +12,26 @@ import com.kt.bbs.service.dto.toDto
 import com.kt.bbs.service.dto.toEntity
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @SpringBootTest
+@Transactional
 class PostServiceTest(
     private val postService: PostService,
     private val postRepository: PostRepository,
     private val commentService: CommentService,
 ) : BehaviorSpec({
+
+    extension(SpringExtension)
+
     given("게시글 생성") {
 
         When("게시글 생성 요청") {
@@ -33,17 +39,20 @@ class PostServiceTest(
                 PostCreateRequestDto(
                     title = "title",
                     content = "content",
-                    createdBy = "createdBy"
+                    createdBy = "createdBy",
+                    tags = listOf("tag1", "tag2")
                 )
             )
 
             then("게시글이 생성된다") {
                 postId shouldBeGreaterThan 0
                 val post = postRepository.findByIdOrNull(postId)
+                val tags = post?.tags
                 post shouldNotBe null
                 post?.title shouldBe "title"
                 post?.content shouldBe "content"
                 post?.createdBy shouldBe "createdBy"
+                tags?.size shouldBe 2
             }
         }
     }
@@ -53,7 +62,8 @@ class PostServiceTest(
             PostCreateRequestDto(
                 title = "title",
                 content = "content",
-                createdBy = "createdBy"
+                createdBy = "createdBy",
+                tags = listOf("tag1", "tag2")
             ).toEntity()
         )
 
@@ -63,7 +73,8 @@ class PostServiceTest(
                 PostUpdateRequestDto(
                     title = "title2",
                     content = "content2",
-                    updatedBy = "createdBy"
+                    updatedBy = "createdBy",
+                    tags = listOf("tag1", "tag4")
                 )
             )
 
@@ -74,6 +85,8 @@ class PostServiceTest(
                 updatedPost?.title shouldBe "title2"
                 updatedPost?.content shouldBe "content2"
                 updatedPost?.updatedBy shouldBe "createdBy"
+                updatedPost?.tags?.filter { it.name == "tag3" }?.size shouldBe 0
+                updatedPost?.tags?.filter { it.name == "tag1" }?.size shouldBe 1
             }
         }
 

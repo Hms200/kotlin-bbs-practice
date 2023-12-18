@@ -14,6 +14,7 @@ class Post(
     createdBy: String,
     title: String,
     content: String,
+    tags: List<String>? = null,
 ) : BaseEntity(createdBy) {
 
     @Id
@@ -29,10 +30,32 @@ class Post(
     var comments: MutableList<Comment> = mutableListOf()
         protected set
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = [CascadeType.ALL])
+    var tags: MutableList<Tag> = tags?.let {
+        it.map { tag ->
+            Tag(
+                name = tag,
+                createdBy = createdBy,
+                post = this,
+            )
+        }
+    }.orEmpty().toMutableList()
+        protected set
+
     fun update(requestDto: PostUpdateRequestDto) {
         if (this.createdBy != requestDto.updatedBy) throw PostCreatorMismatchException()
         this.title = requestDto.title
         this.content = requestDto.content
+        this.tags = this.tags.apply {
+            clear()
+            addAll(requestDto.tags?.map { tag ->
+                Tag(
+                    name = tag,
+                    createdBy = requestDto.updatedBy,
+                    post = this@Post,
+                )
+            }.orEmpty())
+        }
         super.update(requestDto.updatedBy)
     }
 }

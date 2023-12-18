@@ -4,7 +4,9 @@ import org.springframework.web.bind.annotation.RequestParam
 
 data class PostSearchRequest(
     @RequestParam
-    val title: String?,
+    val title: String? = null,
     @RequestParam
-    val createdBy: String?,
+    val createdBy: String? = null,
+    @RequestParam
+    val tag: String? = null,
 )

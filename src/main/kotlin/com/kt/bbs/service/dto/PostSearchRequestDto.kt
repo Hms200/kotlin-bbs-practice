@@ -5,9 +5,11 @@ import com.kt.bbs.controller.dto.PostSearchRequest
 data class PostSearchRequestDto(
     val title: String? = null,
     val createdBy: String? = null,
+    val tag: String? = null,
 )
 
 fun PostSearchRequest.toDto() = PostSearchRequestDto(
     title = title,
-    createdBy = createdBy
+    createdBy = createdBy,
+    tag = tag,
 )
